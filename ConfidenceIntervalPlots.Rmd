@@ -1,0 +1,771 @@
+---
+title: "Masters Project CI Plots"
+author: "Ellie Cox"
+date: "2022-10-18"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load Packages
+
+```{r loadpackages}
+library(ggplot2)
+```
+
+## Load Data
+I could automate this, but to speed things along I'm brute force loading these in.
+
+```{r loadMarkowitz}
+Markowitz_n4_corr_weights <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/Markowitz_n4_Corr_Weights.csv")
+Markowitz_n8_corr_weights <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/Markowitz_n8_Corr_Weights.csv")
+Markowitz_n16_corr_weights <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/Markowitz_n16_Corr_Weights.csv")
+
+Markowitz_n4_corr_weights_os <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/Markowitz_n4_Corr_Weights_zeros.csv")
+Markowitz_n8_corr_weights_os <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/Markowitz_n8_Corr_Weights_zeros.csv")
+Markowitz_n16_corr_weights_os <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/Markowitz_n16_Corr_Weights_zeros.csv")
+
+Markowitz_n4_ind_weights <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/Markowitz_n4_Ind_Weights.csv")
+Markowitz_n8_ind_weights <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/Markowitz_n8_Ind_Weights.csv")
+Markowitz_n16_ind_weights <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/Markowitz_n16_Ind_Weights.csv")
+
+Markowitz_n4_ind_weights_os <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/Markowitz_n4_Ind_Weights_zeros.csv")
+Markowitz_n8_ind_weights_os <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/Markowitz_n8_Ind_Weights_zeros.csv")
+Markowitz_n16_ind_weights_os <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/Markowitz_n16_Ind_Weights_zeros.csv")
+
+Markowitz_n4_neg_weights <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/Markowitz_n4_Neg_Weights.csv")
+Markowitz_n8_neg_weights <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/Markowitz_n8_Neg_Weights.csv")
+Markowitz_n16_neg_weights <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/Markowitz_n16_Neg_Weights.csv")
+
+Markowitz_n4_neg_weights_os <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/Markowitz_n4_Neg_Weights_zeros.csv")
+Markowitz_n8_neg_weights_os <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/Markowitz_n8_Neg_Weights_zeros.csv")
+Markowitz_n16_neg_weights_os <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/Markowitz_n16_Neg_Weights_zeros.csv")
+```
+
+```{r loadBL}
+BL_n4_corr_weights <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/BL_n4_Corr_Weights.csv")
+BL_n8_corr_weights <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/BL_n8_Corr_Weights.csv")
+BL_n16_corr_weights <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/BL_n16_Corr_Weights.csv")
+
+BL_n4_corr_weights_os <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/BL_n4_Corr_Weights_zeros.csv")
+BL_n8_corr_weights_os <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/BL_n8_Corr_Weights_zeros.csv")
+BL_n16_corr_weights_os <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/BL_n16_Corr_Weights_zeros.csv")
+
+BL_n4_ind_weights <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/BL_n4_Ind_Weights.csv")
+BL_n8_ind_weights <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/BL_n8_Ind_Weights.csv")
+BL_n16_ind_weights <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/BL_n16_Ind_Weights.csv")
+
+BL_n4_ind_weights_os <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/BL_n4_Ind_Weights_zeros.csv")
+BL_n8_ind_weights_os <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/BL_n8_Ind_Weights_zeros.csv")
+BL_n16_ind_weights_os <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/BL_n16_Ind_Weights_zeros.csv")
+
+BL_n4_neg_weights <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/BL_n4_Neg_Weights.csv")
+BL_n8_neg_weights <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/BL_n8_Neg_Weights.csv")
+BL_n16_neg_weights <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/BL_n16_Neg_Weights.csv")
+
+BL_n4_neg_weights_os <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/BL_n4_Neg_Weights_zeros.csv")
+BL_n8_neg_weights_os <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/BL_n8_Neg_Weights_zeros.csv")
+BL_n16_neg_weights_os <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/BL_n16_Neg_Weights_zeros.csv")
+```
+
+```{r loadMachineLearning}
+ML_n4_corr_weights <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/ML_n4_Corr_Weights.csv")
+ML_n8_corr_weights <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/ML_n8_Corr_Weights.csv")
+ML_n16_corr_weights <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/ML_n16_Corr_Weights.csv")
+
+ML_n4_corr_weights_os <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/ML_n4_Corr_Weights_zeros.csv")
+ML_n8_corr_weights_os <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/ML_n8_Corr_Weights_zeros.csv")
+ML_n16_corr_weights_os <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/ML_n16_Corr_Weights_zeros.csv")
+
+ML_n4_ind_weights <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/ML_n4_Ind_Weights.csv")
+ML_n8_ind_weights <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/ML_n8_Ind_Weights.csv")
+ML_n16_ind_weights <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/ML_n16_Ind_Weights.csv")
+
+ML_n4_ind_weights_os <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/ML_n4_Ind_Weights_zeros.csv")
+ML_n8_ind_weights_os <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/ML_n8_Ind_Weights_zeros.csv")
+ML_n16_ind_weights_os <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/ML_n16_Ind_Weights_zeros.csv")
+
+ML_n4_neg_weights <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/ML_n4_Neg_Weights.csv")
+ML_n8_neg_weights <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/ML_n8_Neg_Weights.csv")
+ML_n16_neg_weights <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/ML_n16_Neg_Weights.csv")
+
+ML_n4_neg_weights_os <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/ML_n4_Neg_Weights_zeros.csv")
+ML_n8_neg_weights_os <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/ML_n8_Neg_Weights_zeros.csv")
+ML_n16_neg_weights_os <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/ML_n16_Neg_Weights_zeros.csv")
+```
+
+## Make line plot with confidence band
+
+## Correlated
+
+```{r CorrelatedPlotwithCI}
+#########
+## n=4 - no zeros
+#########
+Corr_n4_means <- data.frame(c(apply(Markowitz_n4_corr_weights[,-1], 2, mean),
+                            apply(BL_n4_corr_weights[,-1], 2, mean),
+                            apply(ML_n4_corr_weights[complete.cases(ML_n4_corr_weights),-1], 2, mean)),
+                            c(apply(Markowitz_n4_corr_weights[,-1], 2, sd),
+                            apply(BL_n4_corr_weights[,-1], 2, sd),
+                            apply(ML_n4_corr_weights[complete.cases(ML_n4_corr_weights),-1], 2, sd)))
+colnames(Corr_n4_means)[1] <- "mean"; colnames(Corr_n4_means)[2] <- "stdev"
+Corr_n4_means$asset <- c(1:4,1:4,1:4)
+Corr_n4_means$Method <- c(rep("Markowitz",4),rep("Black-Litterman",4),rep("Deep Learning",4))
+Corr_n4_means$asset[which(Corr_n4_means$Method == "Markowitz")] <- Corr_n4_means$asset[which(Corr_n4_means$Method == "Markowitz")] - 0.1 
+Corr_n4_means$asset[which(Corr_n4_means$Method == "Deep Learning")] <- Corr_n4_means$asset[which(Corr_n4_means$Method == "Deep Learning")] + 0.1
+
+ggCorr_n4_means <- ggplot(Corr_n4_means, aes(asset, mean, color = Method)) +
+  geom_point() + 
+  geom_errorbar(aes(ymin = mean-1.96*stdev/10, ymax=mean+1.96*stdev/10)) +
+  xlab("Asset") +
+  ylab("Mean") +
+  ggtitle("Average return allocation for 4 positively correlated assets and their 95% confidence intervals")
+
+ggsave("/Users/elizabeth/Documents/Master's Project/Corr_n4_plot.png",
+       plot = last_plot(),
+       width = 10,
+       height = 7,
+       dpi = 600,
+       device = "png")
+
+#########
+## n=4 - zeros
+#########
+Corr_n4_means_os <- data.frame(c(apply(Markowitz_n4_corr_weights_os[,-1], 2, mean),
+                            apply(BL_n4_corr_weights_os[,-1], 2, mean),
+                            apply(ML_n4_corr_weights_os[complete.cases(ML_n4_corr_weights_os),-1], 2, mean)),
+                            c(apply(Markowitz_n4_corr_weights_os[,-1], 2, sd),
+                            apply(BL_n4_corr_weights_os[,-1], 2, sd),
+                            apply(ML_n4_corr_weights_os[complete.cases(ML_n4_corr_weights_os),-1], 2, sd)))
+colnames(Corr_n4_means_os)[1] <- "mean"; colnames(Corr_n4_means_os)[2] <- "stdev"
+Corr_n4_means_os$asset <- c(1:4,1:4,1:4)
+Corr_n4_means_os$Method <- c(rep("Markowitz",4),rep("Black-Litterman",4),rep("Deep Learning",4))
+Corr_n4_means_os$asset[which(Corr_n4_means_os$Method == "Markowitz")] <- Corr_n4_means_os$asset[which(Corr_n4_means_os$Method == "Markowitz")] - 0.1 
+Corr_n4_means_os$asset[which(Corr_n4_means_os$Method == "Deep Learning")] <- Corr_n4_means_os$asset[which(Corr_n4_means_os$Method == "Deep Learning")] + 0.1
+
+ggCorr_n4_means_os <- ggplot(Corr_n4_means_os, aes(asset, mean, color = Method)) +
+  geom_point() + 
+  geom_errorbar(aes(ymin = mean-1.96*stdev/10, ymax=mean+1.96*stdev/10)) +
+  xlab("Asset") +
+  ylab("Mean") +
+  ggtitle("Average return allocation for 4 positively correlated assets and their 95% confidence intervals \n
+          where 75% of assets 1 and 2 are zeros")
+
+ggsave("/Users/elizabeth/Documents/Master's Project/Corr_n4_plot_zeros.png",
+       plot = last_plot(),
+       width = 10,
+       height = 7,
+       dpi = 600,
+       device = "png")
+
+#########
+## n=8 - no zeros
+#########
+Corr_n8_means <- data.frame(c(apply(Markowitz_n8_corr_weights[,-1], 2, mean),
+                            apply(BL_n8_corr_weights[,-1], 2, mean),
+                            apply(ML_n8_corr_weights[complete.cases(ML_n8_corr_weights),-1], 2, mean)),
+                            c(apply(Markowitz_n8_corr_weights[,-1], 2, sd),
+                            apply(BL_n8_corr_weights[,-1], 2, sd),
+                            apply(ML_n8_corr_weights[complete.cases(ML_n8_corr_weights),-1], 2, sd)))
+colnames(Corr_n8_means)[1] <- "mean"; colnames(Corr_n8_means)[2] <- "stdev"
+Corr_n8_means$asset <- c(1:8,1:8,1:8)
+Corr_n8_means$Method <- c(rep("Markowitz",8),rep("Black-Litterman",8),rep("Deep Learning",8))
+Corr_n8_means$asset[which(Corr_n8_means$Method == "Markowitz")] <- Corr_n8_means$asset[which(Corr_n8_means$Method == "Markowitz")] - 0.1 
+Corr_n8_means$asset[which(Corr_n8_means$Method == "Deep Learning")] <- Corr_n8_means$asset[which(Corr_n8_means$Method == "Deep Learning")] + 0.1
+
+ggCorr_n8_means <- ggplot(Corr_n8_means, aes(asset, mean, color = Method)) +
+  geom_point() + 
+  geom_errorbar(aes(ymin = mean-1.96*stdev/10, ymax=mean+1.96*stdev/10)) +
+  xlab("Asset") +
+  ylab("Mean") +
+  ggtitle("Average return allocation for 8 positively correlated assets and their 95% confidence intervals")
+
+ggsave("/Users/elizabeth/Documents/Master's Project/Corr_n8_plot.png",
+       plot = last_plot(),
+       width = 10,
+       height = 7,
+       dpi = 600,
+       device = "png")
+
+#########
+## n=8 - zeros
+#########
+Corr_n8_means_os <- data.frame(c(apply(Markowitz_n8_corr_weights_os[,-1], 2, mean),
+                            apply(BL_n8_corr_weights_os[,-1], 2, mean),
+                            apply(ML_n8_corr_weights_os[complete.cases(ML_n8_corr_weights_os),-1], 2, mean)),
+                            c(apply(Markowitz_n8_corr_weights_os[,-1], 2, sd),
+                            apply(BL_n8_corr_weights_os[,-1], 2, sd),
+                            apply(ML_n8_corr_weights_os[complete.cases(ML_n8_corr_weights_os),-1], 2, sd)))
+colnames(Corr_n8_means_os)[1] <- "mean"; colnames(Corr_n8_means_os)[2] <- "stdev"
+Corr_n8_means_os$asset <- c(1:8,1:8,1:8)
+Corr_n8_means_os$Method <- c(rep("Markowitz",8),rep("Black-Litterman",8),rep("Deep Learning",8))
+Corr_n8_means_os$asset[which(Corr_n8_means_os$Method == "Markowitz")] <- Corr_n8_means_os$asset[which(Corr_n8_means_os$Method == "Markowitz")] - 0.1 
+Corr_n8_means_os$asset[which(Corr_n8_means_os$Method == "Deep Learning")] <- Corr_n8_means_os$asset[which(Corr_n8_means_os$Method == "Deep Learning")] + 0.1
+
+ggCorr_n8_means_os <- ggplot(Corr_n8_means_os, aes(asset, mean, color = Method)) +
+  geom_point() + 
+  geom_errorbar(aes(ymin = mean-1.96*stdev/10, ymax=mean+1.96*stdev/10)) +
+  xlab("Asset") +
+  ylab("Mean") +
+  ggtitle("Average return allocation for 8 positively correlated assets and their 95% confidence intervals \n
+          where 75% of assets 1 and 2 are zeros")
+
+ggsave("/Users/elizabeth/Documents/Master's Project/Corr_n8_plot_zeros.png",
+       plot = last_plot(),
+       width = 10,
+       height = 7,
+       dpi = 600,
+       device = "png")
+
+#########
+## n=16 - no zeros
+#########
+Corr_n16_means <- data.frame(c(apply(Markowitz_n16_corr_weights[,-1], 2, mean),
+                            apply(BL_n16_corr_weights[,-1], 2, mean),
+                            apply(ML_n16_corr_weights[complete.cases(ML_n16_corr_weights),-1], 2, mean)),
+                            c(apply(Markowitz_n16_corr_weights[,-1], 2, sd),
+                            apply(BL_n16_corr_weights[,-1], 2, sd),
+                            apply(ML_n16_corr_weights[complete.cases(ML_n16_corr_weights),-1], 2, sd)))
+colnames(Corr_n16_means)[1] <- "mean"; colnames(Corr_n16_means)[2] <- "stdev"
+Corr_n16_means$asset <- c(1:16,1:16,1:16)
+Corr_n16_means$Method <- c(rep("Markowitz",16),rep("Black-Litterman",16),rep("Deep Learning",16))
+Corr_n16_means$asset[which(Corr_n16_means$Method == "Markowitz")] <- Corr_n16_means$asset[which(Corr_n16_means$Method == "Markowitz")] - 0.1 
+Corr_n16_means$asset[which(Corr_n16_means$Method == "Deep Learning")] <- Corr_n16_means$asset[which(Corr_n16_means$Method == "Deep Learning")] + 0.1
+
+ggCorr_n16_means <- ggplot(Corr_n16_means, aes(asset, mean, color = Method)) +
+  geom_point() + 
+  geom_errorbar(aes(ymin = mean-1.96*stdev/10, ymax=mean+1.96*stdev/10)) +
+  xlab("Asset") +
+  ylab("Mean") +
+  ggtitle("Average return allocation for 16 positively correlated assets and their 95% confidence intervals")
+
+ggsave("/Users/elizabeth/Documents/Master's Project/Corr_n16_plot.png",
+       plot = last_plot(),
+       width = 10,
+       height = 7,
+       dpi = 600,
+       device = "png")
+
+#########
+## n=16 - zeros
+#########
+Corr_n16_means_os <- data.frame(c(apply(Markowitz_n16_corr_weights_os[,-1], 2, mean),
+                            apply(BL_n16_corr_weights_os[,-1], 2, mean),
+                            apply(ML_n16_corr_weights_os[complete.cases(ML_n16_corr_weights_os),-1], 2, mean)),
+                            c(apply(Markowitz_n16_corr_weights_os[,-1], 2, sd),
+                            apply(BL_n16_corr_weights_os[,-1], 2, sd),
+                            apply(ML_n16_corr_weights_os[complete.cases(ML_n16_corr_weights_os),-1], 2, sd)))
+colnames(Corr_n16_means_os)[1] <- "mean"; colnames(Corr_n16_means_os)[2] <- "stdev"
+Corr_n16_means_os$asset <- c(1:16,1:16,1:16)
+Corr_n16_means_os$Method <- c(rep("Markowitz",16),rep("Black-Litterman",16),rep("Deep Learning",16))
+Corr_n16_means_os$asset[which(Corr_n16_means_os$Method == "Markowitz")] <- Corr_n16_means_os$asset[which(Corr_n16_means_os$Method == "Markowitz")] - 0.1 
+Corr_n16_means_os$asset[which(Corr_n16_means_os$Method == "Deep Learning")] <- Corr_n16_means_os$asset[which(Corr_n16_means_os$Method == "Deep Learning")] + 0.1
+
+ggCorr_n16_means_os <- ggplot(Corr_n16_means_os, aes(asset, mean, color = Method)) +
+  geom_point() + 
+  geom_errorbar(aes(ymin = mean-1.96*stdev/10, ymax=mean+1.96*stdev/10)) +
+  xlab("Asset") +
+  ylab("Mean") +
+  ggtitle("Average return allocation for 16 assets and their 95% confidence intervals \n
+          where 75% of assets 1 and 2 are zeros")
+
+ggsave("/Users/elizabeth/Documents/Master's Project/Corr_n16_plot_zeros.png",
+       plot = last_plot(),
+       width = 10,
+       height = 7,
+       dpi = 600,
+       device = "png")
+```
+
+## Independent
+
+```{r IndependentPlotwithCI}
+#########
+## n=4 - no zeros
+#########
+Ind_n4_means <- data.frame(c(apply(Markowitz_n4_ind_weights[,-1], 2, mean),
+                            apply(BL_n4_ind_weights[,-1], 2, mean),
+                            apply(ML_n4_ind_weights[complete.cases(ML_n4_ind_weights),-1], 2, mean)),
+                            c(apply(Markowitz_n4_ind_weights[,-1], 2, sd),
+                            apply(BL_n4_ind_weights[,-1], 2, sd),
+                            apply(ML_n4_ind_weights[complete.cases(ML_n4_ind_weights),-1], 2, sd)))
+colnames(Ind_n4_means)[1] <- "mean"; colnames(Ind_n4_means)[2] <- "stdev"
+Ind_n4_means$asset <- c(1:4,1:4,1:4)
+Ind_n4_means$Method <- c(rep("Markowitz",4),rep("Black-Litterman",4),rep("Deep Learning",4))
+Ind_n4_means$asset[which(Ind_n4_means$Method == "Markowitz")] <- Ind_n4_means$asset[which(Ind_n4_means$Method == "Markowitz")] - 0.1 
+Ind_n4_means$asset[which(Ind_n4_means$Method == "Deep Learning")] <- Ind_n4_means$asset[which(Ind_n4_means$Method == "Deep Learning")] + 0.1
+
+ggInd_n4_means <- ggplot(Ind_n4_means, aes(asset, mean, color = Method)) +
+  geom_point() + 
+  geom_errorbar(aes(ymin = mean-1.96*stdev/10, ymax=mean+1.96*stdev/10)) +
+  xlab("Asset") +
+  ylab("Mean") +
+  ggtitle("Average return allocation for 4 independent assets and their 95% confidence intervals")
+
+ggsave("/Users/elizabeth/Documents/Master's Project/Ind_n4_plot.png",
+       plot = last_plot(),
+       width = 10,
+       height = 7,
+       dpi = 600,
+       device = "png")
+
+#########
+## n=4 - zeros
+#########
+Ind_n4_means_os <- data.frame(c(apply(Markowitz_n4_ind_weights_os[,-1], 2, mean),
+                            apply(BL_n4_ind_weights_os[,-1], 2, mean),
+                            apply(ML_n4_ind_weights_os[complete.cases(ML_n4_ind_weights_os),-1], 2, mean)),
+                            c(apply(Markowitz_n4_ind_weights_os[,-1], 2, sd),
+                            apply(BL_n4_ind_weights_os[,-1], 2, sd),
+                            apply(ML_n4_ind_weights_os[complete.cases(ML_n4_ind_weights_os),-1], 2, sd)))
+colnames(Ind_n4_means_os)[1] <- "mean"; colnames(Ind_n4_means_os)[2] <- "stdev"
+Ind_n4_means_os$asset <- c(1:4,1:4,1:4)
+Ind_n4_means_os$Method <- c(rep("Markowitz",4),rep("Black-Litterman",4),rep("Deep Learning",4))
+Ind_n4_means_os$asset[which(Ind_n4_means_os$Method == "Markowitz")] <- Ind_n4_means_os$asset[which(Ind_n4_means_os$Method == "Markowitz")] - 0.1 
+Ind_n4_means_os$asset[which(Ind_n4_means_os$Method == "Deep Learning")] <- Ind_n4_means_os$asset[which(Ind_n4_means_os$Method == "Deep Learning")] + 0.1
+
+ggInd_n4_means_os <- ggplot(Ind_n4_means_os, aes(asset, mean, color = Method)) +
+  geom_point() + 
+  geom_errorbar(aes(ymin = mean-1.96*stdev/10, ymax=mean+1.96*stdev/10)) +
+  xlab("Asset") +
+  ylab("Mean") +
+  ggtitle("Average return allocation for 4 independent assets and their 95% confidence intervals \n
+          where 75% of assets 1 and 2 are zeros")
+
+ggsave("/Users/elizabeth/Documents/Master's Project/Ind_n4_plot_zeros.png",
+       plot = last_plot(),
+       width = 10,
+       height = 7,
+       dpi = 600,
+       device = "png")
+
+#########
+## n=8 - no zeros
+#########
+Ind_n8_means <- data.frame(c(apply(Markowitz_n8_ind_weights[,-1], 2, mean),
+                            apply(BL_n8_ind_weights[,-1], 2, mean),
+                            apply(ML_n8_ind_weights[complete.cases(ML_n8_ind_weights),-1], 2, mean)),
+                            c(apply(Markowitz_n8_ind_weights[,-1], 2, sd),
+                            apply(BL_n8_ind_weights[,-1], 2, sd),
+                            apply(ML_n8_ind_weights[complete.cases(ML_n8_ind_weights),-1], 2, sd)))
+colnames(Ind_n8_means)[1] <- "mean"; colnames(Ind_n8_means)[2] <- "stdev"
+Ind_n8_means$asset <- c(1:8,1:8,1:8)
+Ind_n8_means$Method <- c(rep("Markowitz",8),rep("Black-Litterman",8),rep("Deep Learning",8))
+Ind_n8_means$asset[which(Ind_n8_means$Method == "Markowitz")] <- Ind_n8_means$asset[which(Ind_n8_means$Method == "Markowitz")] - 0.1 
+Ind_n8_means$asset[which(Ind_n8_means$Method == "Deep Learning")] <- Ind_n8_means$asset[which(Ind_n8_means$Method == "Deep Learning")] + 0.1
+
+ggInd_n8_means <- ggplot(Ind_n8_means, aes(asset, mean, color = Method)) +
+  geom_point() + 
+  geom_errorbar(aes(ymin = mean-1.96*stdev/10, ymax=mean+1.96*stdev/10)) +
+  xlab("Asset") +
+  ylab("Mean") +
+  ggtitle("Average return allocation for 8 independent assets and their 95% confidence intervals")
+
+ggsave("/Users/elizabeth/Documents/Master's Project/Ind_n8_plot.png",
+       plot = last_plot(),
+       width = 10,
+       height = 7,
+       dpi = 600,
+       device = "png")
+
+#########
+## n=8 - zeros
+#########
+Ind_n8_means_os <- data.frame(c(apply(Markowitz_n8_ind_weights_os[,-1], 2, mean),
+                            apply(BL_n8_ind_weights_os[,-1], 2, mean),
+                            apply(ML_n8_ind_weights_os[complete.cases(ML_n8_ind_weights_os),-1], 2, mean)),
+                            c(apply(Markowitz_n8_ind_weights_os[,-1], 2, sd),
+                            apply(BL_n8_ind_weights_os[,-1], 2, sd),
+                            apply(ML_n8_ind_weights_os[complete.cases(ML_n8_ind_weights_os),-1], 2, sd)))
+colnames(Ind_n8_means_os)[1] <- "mean"; colnames(Ind_n8_means_os)[2] <- "stdev"
+Ind_n8_means_os$asset <- c(1:8,1:8,1:8)
+Ind_n8_means_os$Method <- c(rep("Markowitz",8),rep("Black-Litterman",8),rep("Deep Learning",8))
+Ind_n8_means_os$asset[which(Ind_n8_means_os$Method == "Markowitz")] <- Ind_n8_means_os$asset[which(Ind_n8_means_os$Method == "Markowitz")] - 0.1 
+Ind_n8_means_os$asset[which(Ind_n8_means_os$Method == "Deep Learning")] <- Ind_n8_means_os$asset[which(Ind_n8_means_os$Method == "Deep Learning")] + 0.1
+
+ggInd_n8_means_os <- ggplot(Ind_n8_means_os, aes(asset, mean, color = Method)) +
+  geom_point() + 
+  geom_errorbar(aes(ymin = mean-1.96*stdev/10, ymax=mean+1.96*stdev/10)) +
+  xlab("Asset") +
+  ylab("Mean") +
+  ggtitle("Average return allocation for 8 independent assets and their 95% confidence intervals \n
+          where 75% of assets 1 and 2 are zeros")
+
+ggsave("/Users/elizabeth/Documents/Master's Project/Ind_n8_plot_zeros.png",
+       plot = last_plot(),
+       width = 10,
+       height = 7,
+       dpi = 600,
+       device = "png")
+
+#########
+## n=16 - no zeros
+#########
+Ind_n16_means <- data.frame(c(apply(Markowitz_n16_ind_weights[,-1], 2, mean),
+                            apply(BL_n16_ind_weights[,-1], 2, mean),
+                            apply(ML_n16_ind_weights[complete.cases(ML_n16_ind_weights),-1], 2, mean)),
+                            c(apply(Markowitz_n16_ind_weights[,-1], 2, sd),
+                            apply(BL_n16_ind_weights[,-1], 2, sd),
+                            apply(ML_n16_ind_weights[complete.cases(ML_n16_ind_weights),-1], 2, sd)))
+colnames(Ind_n16_means)[1] <- "mean"; colnames(Ind_n16_means)[2] <- "stdev"
+Ind_n16_means$asset <- c(1:16,1:16,1:16)
+Ind_n16_means$Method <- c(rep("Markowitz",16),rep("Black-Litterman",16),rep("Deep Learning",16))
+Ind_n16_means$asset[which(Ind_n16_means$Method == "Markowitz")] <- Ind_n16_means$asset[which(Ind_n16_means$Method == "Markowitz")] - 0.1 
+Ind_n16_means$asset[which(Ind_n16_means$Method == "Deep Learning")] <- Ind_n16_means$asset[which(Ind_n16_means$Method == "Deep Learning")] + 0.1
+
+ggInd_n16_means <- ggplot(Ind_n16_means, aes(asset, mean, color = Method)) +
+  geom_point() + 
+  geom_errorbar(aes(ymin = mean-1.96*stdev/10, ymax=mean+1.96*stdev/10)) +
+  xlab("Asset") +
+  ylab("Mean") +
+  ggtitle("Average return allocation for 16 independent assets and their 95% confidence intervals")
+
+ggsave("/Users/elizabeth/Documents/Master's Project/Ind_n16_plot.png",
+       plot = last_plot(),
+       width = 10,
+       height = 7,
+       dpi = 600,
+       device = "png")
+
+#########
+## n=16 - zeros
+#########
+Ind_n16_means_os <- data.frame(c(apply(Markowitz_n16_ind_weights_os[,-1], 2, mean),
+                            apply(BL_n16_ind_weights_os[,-1], 2, mean),
+                            apply(ML_n16_ind_weights_os[complete.cases(ML_n16_ind_weights_os),-1], 2, mean)),
+                            c(apply(Markowitz_n16_ind_weights_os[,-1], 2, sd),
+                            apply(BL_n16_ind_weights_os[,-1], 2, sd),
+                            apply(ML_n16_ind_weights_os[complete.cases(ML_n16_ind_weights_os),-1], 2, sd)))
+colnames(Ind_n16_means_os)[1] <- "mean"; colnames(Ind_n16_means_os)[2] <- "stdev"
+Ind_n16_means_os$asset <- c(1:16,1:16,1:16)
+Ind_n16_means_os$Method <- c(rep("Markowitz",16),rep("Black-Litterman",16),rep("Deep Learning",16))
+Ind_n16_means_os$asset[which(Ind_n16_means_os$Method == "Markowitz")] <- Ind_n16_means_os$asset[which(Ind_n16_means_os$Method == "Markowitz")] - 0.1 
+Ind_n16_means_os$asset[which(Ind_n16_means_os$Method == "Deep Learning")] <- Ind_n16_means_os$asset[which(Ind_n16_means_os$Method == "Deep Learning")] + 0.1
+
+ggInd_n16_means_os <- ggplot(Ind_n16_means_os, aes(asset, mean, color = Method)) +
+  geom_point() + 
+  geom_errorbar(aes(ymin = mean-1.96*stdev/10, ymax=mean+1.96*stdev/10)) +
+  xlab("Asset") +
+  ylab("Mean") +
+  ggtitle("Average return allocation for 16 independent assets and their 95% confidence intervals \n
+          where 75% of assets 1 and 2 are zeros")
+
+ggsave("/Users/elizabeth/Documents/Master's Project/Ind_n16_plot_zeros.png",
+       plot = last_plot(),
+       width = 10,
+       height = 7,
+       dpi = 600,
+       device = "png")
+```
+
+## Negatively Correlated
+
+```{r NegativePlotwithCI}
+#########
+## n=4 - no zeros
+#########
+Neg_n4_means <- data.frame(c(apply(Markowitz_n4_neg_weights[,-1], 2, mean),
+                            apply(BL_n4_neg_weights[,-1], 2, mean),
+                            apply(ML_n4_neg_weights[complete.cases(ML_n4_neg_weights),-1], 2, mean)),
+                            c(apply(Markowitz_n4_neg_weights[,-1], 2, sd),
+                            apply(BL_n4_neg_weights[,-1], 2, sd),
+                            apply(ML_n4_neg_weights[complete.cases(ML_n4_neg_weights),-1], 2, sd)))
+colnames(Neg_n4_means)[1] <- "mean"; colnames(Neg_n4_means)[2] <- "stdev"
+Neg_n4_means$asset <- c(1:4,1:4,1:4)
+Neg_n4_means$Method <- c(rep("Markowitz",4),rep("Black-Litterman",4),rep("Deep Learning",4))
+Neg_n4_means$asset[which(Neg_n4_means$Method == "Markowitz")] <- Neg_n4_means$asset[which(Neg_n4_means$Method == "Markowitz")] - 0.1 
+Neg_n4_means$asset[which(Neg_n4_means$Method == "Deep Learning")] <- Neg_n4_means$asset[which(Neg_n4_means$Method == "Deep Learning")] + 0.1
+
+ggNeg_n4_means <- ggplot(Neg_n4_means, aes(asset, mean, color = Method)) +
+  geom_point() + 
+  geom_errorbar(aes(ymin = mean-1.96*stdev/10, ymax=mean+1.96*stdev/10)) +
+  xlab("Asset") +
+  ylab("Mean") +
+  ggtitle("Average return allocation for 4 negatively correlated assets and their 95% confidence intervals")
+
+ggsave("/Users/elizabeth/Documents/Master's Project/Neg_n4_plot.png",
+       plot = last_plot(),
+       width = 10,
+       height = 7,
+       dpi = 600,
+       device = "png")
+
+#########
+## n=4 - zeros
+#########
+Neg_n4_means_os <- data.frame(c(apply(Markowitz_n4_neg_weights_os[,-1], 2, mean),
+                            apply(BL_n4_neg_weights_os[,-1], 2, mean),
+                            apply(ML_n4_neg_weights_os[complete.cases(ML_n4_neg_weights_os),-1], 2, mean)),
+                            c(apply(Markowitz_n4_neg_weights_os[,-1], 2, sd),
+                            apply(BL_n4_neg_weights_os[,-1], 2, sd),
+                            apply(ML_n4_neg_weights_os[complete.cases(ML_n4_neg_weights_os),-1], 2, sd)))
+colnames(Neg_n4_means_os)[1] <- "mean"; colnames(Neg_n4_means_os)[2] <- "stdev"
+Neg_n4_means_os$asset <- c(1:4,1:4,1:4)
+Neg_n4_means_os$Method <- c(rep("Markowitz",4),rep("Black-Litterman",4),rep("Deep Learning",4))
+Neg_n4_means_os$asset[which(Neg_n4_means_os$Method == "Markowitz")] <- Neg_n4_means_os$asset[which(Neg_n4_means_os$Method == "Markowitz")] - 0.1 
+Neg_n4_means_os$asset[which(Neg_n4_means_os$Method == "Deep Learning")] <- Neg_n4_means_os$asset[which(Neg_n4_means_os$Method == "Deep Learning")] + 0.1
+
+ggNeg_n4_means_os <- ggplot(Neg_n4_means_os, aes(asset, mean, color = Method)) +
+  geom_point() + 
+  geom_errorbar(aes(ymin = mean-1.96*stdev/10, ymax=mean+1.96*stdev/10)) +
+  xlab("Asset") +
+  ylab("Mean") +
+  ggtitle("Average return allocation for 4 negatively correlated assets and their 95% confidence intervals \n
+          where 75% of assets 1 and 2 are zeros")
+
+ggsave("/Users/elizabeth/Documents/Master's Project/Neg_n4_plot_zeros.png",
+       plot = last_plot(),
+       width = 10,
+       height = 7,
+       dpi = 600,
+       device = "png")
+
+#########
+## n=8 - no zeros
+#########
+Neg_n8_means <- data.frame(c(apply(Markowitz_n8_neg_weights[,-1], 2, mean),
+                            apply(BL_n8_neg_weights[,-1], 2, mean),
+                            apply(ML_n8_neg_weights[complete.cases(ML_n8_neg_weights),-1], 2, mean)),
+                            c(apply(Markowitz_n8_neg_weights[,-1], 2, sd),
+                            apply(BL_n8_neg_weights[,-1], 2, sd),
+                            apply(ML_n8_neg_weights[complete.cases(ML_n8_neg_weights),-1], 2, sd)))
+colnames(Neg_n8_means)[1] <- "mean"; colnames(Neg_n8_means)[2] <- "stdev"
+Neg_n8_means$asset <- c(1:8,1:8,1:8)
+Neg_n8_means$Method <- c(rep("Markowitz",8),rep("Black-Litterman",8),rep("Deep Learning",8))
+Neg_n8_means$asset[which(Neg_n8_means$Method == "Markowitz")] <- Neg_n8_means$asset[which(Neg_n8_means$Method == "Markowitz")] - 0.1 
+Neg_n8_means$asset[which(Neg_n8_means$Method == "Deep Learning")] <- Neg_n8_means$asset[which(Neg_n8_means$Method == "Deep Learning")] + 0.1
+
+ggNeg_n8_means <- ggplot(Neg_n8_means, aes(asset, mean, color = Method)) +
+  geom_point() + 
+  geom_errorbar(aes(ymin = mean-1.96*stdev/10, ymax=mean+1.96*stdev/10)) +
+  xlab("Asset") +
+  ylab("Mean") +
+  ggtitle("Average return allocation for 8 negatively correlated assets and their 95% confidence intervals")
+
+ggsave("/Users/elizabeth/Documents/Master's Project/Neg_n8_plot.png",
+       plot = last_plot(),
+       width = 10,
+       height = 7,
+       dpi = 600,
+       device = "png")
+
+#########
+## n=8 - zeros
+#########
+Neg_n8_means_os <- data.frame(c(apply(Markowitz_n8_neg_weights_os[,-1], 2, mean),
+                            apply(BL_n8_neg_weights_os[,-1], 2, mean),
+                            apply(ML_n8_neg_weights_os[complete.cases(ML_n8_neg_weights_os),-1], 2, mean)),
+                            c(apply(Markowitz_n8_neg_weights_os[,-1], 2, sd),
+                            apply(BL_n8_neg_weights_os[,-1], 2, sd),
+                            apply(ML_n8_neg_weights_os[complete.cases(ML_n8_neg_weights_os),-1], 2, sd)))
+colnames(Neg_n8_means_os)[1] <- "mean"; colnames(Neg_n8_means_os)[2] <- "stdev"
+Neg_n8_means_os$asset <- c(1:8,1:8,1:8)
+Neg_n8_means_os$Method <- c(rep("Markowitz",8),rep("Black-Litterman",8),rep("Deep Learning",8))
+Neg_n8_means_os$asset[which(Neg_n8_means_os$Method == "Markowitz")] <- Neg_n8_means_os$asset[which(Neg_n8_means_os$Method == "Markowitz")] - 0.1 
+Neg_n8_means_os$asset[which(Neg_n8_means_os$Method == "Deep Learning")] <- Neg_n8_means_os$asset[which(Neg_n8_means_os$Method == "Deep Learning")] + 0.1
+
+ggNeg_n8_means_os <- ggplot(Neg_n8_means_os, aes(asset, mean, color = Method)) +
+  geom_point() + 
+  geom_errorbar(aes(ymin = mean-1.96*stdev/10, ymax=mean+1.96*stdev/10)) +
+  xlab("Asset") +
+  ylab("Mean") +
+  ggtitle("Average return allocation for 8 negatively correlated assets and their 95% confidence intervals \n
+          where 75% of assets 1 and 2 are zeros")
+
+ggsave("/Users/elizabeth/Documents/Master's Project/Neg_n8_plot_zeros.png",
+       plot = last_plot(),
+       width = 10,
+       height = 7,
+       dpi = 600,
+       device = "png")
+
+#########
+## n=16 - no zeros
+#########
+Neg_n16_means <- data.frame(c(apply(Markowitz_n16_neg_weights[,-1], 2, mean),
+                            apply(BL_n16_neg_weights[,-1], 2, mean),
+                            apply(ML_n16_neg_weights[complete.cases(ML_n16_neg_weights),-1], 2, mean)),
+                            c(apply(Markowitz_n16_neg_weights[,-1], 2, sd),
+                            apply(BL_n16_neg_weights[,-1], 2, sd),
+                            apply(ML_n16_neg_weights[complete.cases(ML_n16_neg_weights),-1], 2, sd)))
+colnames(Neg_n16_means)[1] <- "mean"; colnames(Neg_n16_means)[2] <- "stdev"
+Neg_n16_means$asset <- c(1:16,1:16,1:16)
+Neg_n16_means$Method <- c(rep("Markowitz",16),rep("Black-Litterman",16),rep("Deep Learning",16))
+Neg_n16_means$asset[which(Neg_n16_means$Method == "Markowitz")] <- Neg_n16_means$asset[which(Neg_n16_means$Method == "Markowitz")] - 0.1 
+Neg_n16_means$asset[which(Neg_n16_means$Method == "Deep Learning")] <- Neg_n16_means$asset[which(Neg_n16_means$Method == "Deep Learning")] + 0.1
+
+ggNeg_n16_means <- ggplot(Neg_n16_means, aes(asset, mean, color = Method)) +
+  geom_point() + 
+  geom_errorbar(aes(ymin = mean-1.96*stdev/10, ymax=mean+1.96*stdev/10)) +
+  xlab("Asset") +
+  ylab("Mean") +
+  ggtitle("Average return allocation for 16 negatively correlated assets and their 95% confidence intervals")
+
+ggsave("/Users/elizabeth/Documents/Master's Project/Neg_n16_plot.png",
+       plot = last_plot(),
+       width = 10,
+       height = 7,
+       dpi = 600,
+       device = "png")
+
+#########
+## n=16 - zeros
+#########
+Neg_n16_means_os <- data.frame(c(apply(Markowitz_n16_neg_weights_os[,-1], 2, mean),
+                            apply(BL_n16_neg_weights_os[,-1], 2, mean),
+                            apply(ML_n16_neg_weights_os[complete.cases(ML_n16_neg_weights_os),-1], 2, mean)),
+                            c(apply(Markowitz_n16_neg_weights_os[,-1], 2, sd),
+                            apply(BL_n16_neg_weights_os[,-1], 2, sd),
+                            apply(ML_n16_neg_weights_os[complete.cases(ML_n16_neg_weights_os),-1], 2, sd)))
+colnames(Neg_n16_means_os)[1] <- "mean"; colnames(Neg_n16_means_os)[2] <- "stdev"
+Neg_n16_means_os$asset <- c(1:16,1:16,1:16)
+Neg_n16_means_os$Method <- c(rep("Markowitz",16),rep("Black-Litterman",16),rep("Deep Learning",16))
+Neg_n16_means_os$asset[which(Neg_n16_means_os$Method == "Markowitz")] <- Neg_n16_means_os$asset[which(Neg_n16_means_os$Method == "Markowitz")] - 0.1 
+Neg_n16_means_os$asset[which(Neg_n16_means_os$Method == "Deep Learning")] <- Neg_n16_means_os$asset[which(Neg_n16_means_os$Method == "Deep Learning")] + 0.1
+
+ggNeg_n16_means_os <- ggplot(Neg_n16_means_os, aes(asset, mean, color = Method)) +
+  geom_point() + 
+  geom_errorbar(aes(ymin = mean-1.96*stdev/10, ymax=mean+1.96*stdev/10)) +
+  xlab("Asset") +
+  ylab("Mean") +
+  ggtitle("Average return allocation for 16 negatively correlated assets and their 95% confidence intervals \n
+          where 75% of assets 1 and 2 are zeros")
+
+ggsave("/Users/elizabeth/Documents/Master's Project/Neg_n16_plot_zeros.png",
+       plot = last_plot(),
+       width = 10,
+       height = 7,
+       dpi = 600,
+       device = "png")
+```
+
+## Absolute confidence - zeros data
+
+```{r readabsconfidence}
+
+Abs_n4_corr_weights <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/Abs_n4_Corr_Weights.csv")
+Abs_n8_corr_weights <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/Abs_n8_Corr_Weights.csv")
+Abs_n16_corr_weights <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/Abs_n16_Corr_Weights.csv")
+
+Abs_n4_corr_weights_os <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/Abs_n4_Corr_Weights_zeros.csv")
+Abs_n8_corr_weights_os <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/Abs_n8_Corr_Weights_zeros.csv")
+Abs_n16_corr_weights_os <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/Abs_n16_Corr_Weights_zeros.csv")
+
+Abs_n4_ind_weights_os <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/Abs_n4_Ind_Weights_zeros.csv")
+Abs_n8_ind_weights_os <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/Abs_n8_Ind_Weights_zeros.csv")
+Abs_n16_ind_weights_os <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/Abs_n16_Ind_Weights_zeros.csv")
+
+Abs_n4_neg_weights <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/Abs_n4_Neg_Weights.csv")
+Abs_n8_neg_weights <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/Abs_n8_Neg_Weights.csv")
+Abs_n16_neg_weights <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/Abs_n16_Neg_Weights.csv")
+
+Abs_n4_neg_weights_os <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/Abs_n4_Neg_Weights_zeros.csv")
+Abs_n8_neg_weights_os <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/Abs_n8_Neg_Weights_zeros.csv")
+Abs_n16_neg_weights_os <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/Abs_n16_Neg_Weights_zeros.csv")
+```
+
+```{r absoluteplots}
+#########
+## n=4 - zeros
+#########
+Corr_n4_means_os <- data.frame(c(apply(Markowitz_n4_corr_weights_os[,-1], 2, mean),
+                            apply(Abs_n4_corr_weights_os[,-1], 2, mean),
+                            apply(ML_n4_corr_weights_os[complete.cases(ML_n4_corr_weights_os),-1], 2, mean)),
+                            c(apply(Markowitz_n4_corr_weights_os[,-1], 2, sd),
+                            apply(Abs_n4_corr_weights_os[,-1], 2, sd),
+                            apply(ML_n4_corr_weights_os[complete.cases(ML_n4_corr_weights_os),-1], 2, sd)))
+colnames(Corr_n4_means_os)[1] <- "mean"; colnames(Corr_n4_means_os)[2] <- "stdev"
+Corr_n4_means_os$asset <- c(1:4,1:4,1:4)
+Corr_n4_means_os$Method <- c(rep("Markowitz",4),rep("Black-Litterman",4),rep("Deep Learning",4))
+Corr_n4_means_os$asset[which(Corr_n4_means_os$Method == "Markowitz")] <- Corr_n4_means_os$asset[which(Corr_n4_means_os$Method == "Markowitz")] - 0.1 
+Corr_n4_means_os$asset[which(Corr_n4_means_os$Method == "Deep Learning")] <- Corr_n4_means_os$asset[which(Corr_n4_means_os$Method == "Deep Learning")] + 0.1
+
+ggCorr_n4_means_os <- ggplot(Corr_n4_means_os, aes(asset, mean, color = Method)) +
+  geom_point() + 
+  geom_errorbar(aes(ymin = mean-1.96*stdev/10, ymax=mean+1.96*stdev/10)) +
+  xlab("Asset") +
+  ylab("Mean") +
+  ggtitle("Average return allocation for 4 positively correlated assets and their 95% confidence intervals \n
+          where 75% of assets 1 and 2 are zeros and Black-Litterman investor views have absolute confidence")
+
+ggsave("/Users/elizabeth/Documents/Master's Project/Corr_n4_plot_zeros_absolute.png",
+       plot = last_plot(),
+       width = 10,
+       height = 7,
+       dpi = 600,
+       device = "png")
+
+
+#########
+## n=8 - zeros
+#########
+Corr_n8_means_os <- data.frame(c(apply(Markowitz_n8_corr_weights_os[,-1], 2, mean),
+                            apply(Abs_n8_corr_weights_os[,-1], 2, mean),
+                            apply(ML_n8_corr_weights_os[complete.cases(ML_n8_corr_weights_os),-1], 2, mean)),
+                            c(apply(Markowitz_n8_corr_weights_os[,-1], 2, sd),
+                            apply(Abs_n8_corr_weights_os[,-1], 2, sd),
+                            apply(ML_n8_corr_weights_os[complete.cases(ML_n8_corr_weights_os),-1], 2, sd)))
+colnames(Corr_n8_means_os)[1] <- "mean"; colnames(Corr_n8_means_os)[2] <- "stdev"
+Corr_n8_means_os$asset <- c(1:8,1:8,1:8)
+Corr_n8_means_os$Method <- c(rep("Markowitz",8),rep("Black-Litterman",8),rep("Deep Learning",8))
+Corr_n8_means_os$asset[which(Corr_n8_means_os$Method == "Markowitz")] <- Corr_n8_means_os$asset[which(Corr_n8_means_os$Method == "Markowitz")] - 0.1 
+Corr_n8_means_os$asset[which(Corr_n8_means_os$Method == "Deep Learning")] <- Corr_n8_means_os$asset[which(Corr_n8_means_os$Method == "Deep Learning")] + 0.1
+
+ggCorr_n8_means_os <- ggplot(Corr_n8_means_os, aes(asset, mean, color = Method)) +
+  geom_point() + 
+  geom_errorbar(aes(ymin = mean-1.96*stdev/10, ymax=mean+1.96*stdev/10)) +
+  xlab("Asset") +
+  ylab("Mean") +
+  ggtitle("Average return allocation for 8 positively correlated assets and their 95% confidence intervals \n
+          where 75% of assets 1 and 2 are zeros and Black-Litterman investor views have absolute confidence")
+
+ggsave("/Users/elizabeth/Documents/Master's Project/Corr_n8_plot_zeros_absolute.png",
+       plot = last_plot(),
+       width = 10,
+       height = 7,
+       dpi = 600,
+       device = "png")
+
+#########
+## n=16 - zeros
+#########
+Corr_n16_means_os <- data.frame(c(apply(Markowitz_n16_corr_weights_os[,-1], 2, mean),
+                            apply(Abs_n16_corr_weights_os[,-1], 2, mean),
+                            apply(ML_n16_corr_weights_os[complete.cases(ML_n16_corr_weights_os),-1], 2, mean)),
+                            c(apply(Markowitz_n16_corr_weights_os[,-1], 2, sd),
+                            apply(Abs_n16_corr_weights_os[,-1], 2, sd),
+                            apply(ML_n16_corr_weights_os[complete.cases(ML_n16_corr_weights_os),-1], 2, sd)))
+colnames(Corr_n16_means_os)[1] <- "mean"; colnames(Corr_n16_means_os)[2] <- "stdev"
+Corr_n16_means_os$asset <- c(1:16,1:16,1:16)
+Corr_n16_means_os$Method <- c(rep("Markowitz",16),rep("Black-Litterman",16),rep("Deep Learning",16))
+Corr_n16_means_os$asset[which(Corr_n16_means_os$Method == "Markowitz")] <- Corr_n16_means_os$asset[which(Corr_n16_means_os$Method == "Markowitz")] - 0.1 
+Corr_n16_means_os$asset[which(Corr_n16_means_os$Method == "Deep Learning")] <- Corr_n16_means_os$asset[which(Corr_n16_means_os$Method == "Deep Learning")] + 0.1
+
+ggCorr_n16_means_os <- ggplot(Corr_n16_means_os, aes(asset, mean, color = Method)) +
+  geom_point() + 
+  geom_errorbar(aes(ymin = mean-1.96*stdev/10, ymax=mean+1.96*stdev/10)) +
+  xlab("Asset") +
+  ylab("Mean") +
+  ggtitle("Average return allocation for 16 assets and their 95% confidence intervals \n
+          where 75% of assets 1 and 2 are zeros and Black-Litterman investor views have absolute confidence")
+
+ggsave("/Users/elizabeth/Documents/Master's Project/Corr_n16_plot_zeros_absolute.png",
+       plot = last_plot(),
+       width = 10,
+       height = 7,
+       dpi = 600,
+       device = "png")
+```
+
+
+
+
+
+
+
+
+
+
+
