@@ -1,0 +1,320 @@
+---
+title: "EU Confidence Interval Plot"
+author: "Ellie Cox"
+date: "2022-10-21"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load Packages
+
+```{r loadpackages}
+library(ggplot2)
+```
+
+## Load Data
+
+```{r loaddata1}
+markowitz_full <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/EUMarkowitzResults_Full.csv")
+markowitz_country <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/EUMarkowitzResults_Country.csv")
+markowitz_year <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/EUMarkowitzResults_Year.csv")
+markowitz_rand <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/EUMarkowitzResults_Random.csv")
+
+BL_full <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/EUBLResults_Full.csv")
+BL_country <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/EUBLResults_Country.csv")
+BL_year <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/EUBLResults_Year.csv")
+BL_rand <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/EUBLResults_Random.csv")
+
+ML_full <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/EUMLResults_Full.csv")
+ML_country <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/EUMLResults_Country.csv")
+ML_year <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/EUMLResults_Year.csv")
+ML_rand <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/EUMLResults_Random.csv")
+```
+
+```{r loaddata}
+markowitz_full_drop <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/EUMarkowitzResults_Full_drop.csv")
+markowitz_country_drop <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/EUMarkowitzResults_Country_drop.csv")
+markowitz_year_drop <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/EUMarkowitzResults_Year_drop.csv")
+markowitz_rand_drop <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/EUMarkowitzResults_Random_drop.csv")
+
+BL_full_drop <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/EUBLResults_Full_drop.csv")
+BL_country_drop <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/EUBLResults_Country_drop.csv")
+BL_year_drop <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/EUBLResults_Year_drop.csv")
+BL_rand_drop <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/EUBLResults_Random_drop.csv")
+
+ML_full_drop <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/EUMLResults_Full_drop.csv")
+ML_country_drop <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/EUMLResults_Country_drop.csv")
+ML_year_drop <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/EUMLResults_Year_drop.csv")
+ML_rand_drop <- read.csv("/Users/elizabeth/Documents/Master's Project/Results/EUMLResults_Random_drop.csv")
+```
+
+## Make plots with ggplot2
+
+```{r markowitzplots}
+sources <- c('Solid fossil fuels','Peat and \n peat products','Oil and \n petroleum products', 
+             'Natural gas','Nuclear heat','Hydro','Solar Thermal', 
+             'Geothermal','Ambient Heat', 'Tide wave \n and ocean', 'Biofuels solid',
+             'Biofuels other')
+
+#########
+## full data - imputation
+#########
+Full_means <- data.frame(c(markowitz_full[,-1],
+                            BL_full[,-1:-2],
+                            ML_full[,-1]))
+colnames(Full_means)[1] <- "mean"; #colnames(Full_means)[2] <- "stdev"
+Full_means$asset <- c(1:12,1:12,1:12)
+Full_means$Method <- c(rep("Markowitz",12),rep("Black-Litterman",12),rep("Deep Learning",12))
+Full_means$asset[which(Full_means$Method == "Markowitz")] <- Full_means$asset[which(Full_means$Method == "Markowitz")] - 0.1 
+Full_means$asset[which(Full_means$Method == "Deep Learning")] <- Full_means$asset[which(Full_means$Method == "Deep Learning")] + 0.1
+
+ggFull_means <- ggplot(Full_means, aes(asset, mean, color = Method)) +
+  geom_point() + 
+  #geom_errorbar(aes(ymin = mean-1.96*stdev/10, ymax=mean+1.96*stdev/10)) +
+  scale_x_continuous(breaks = seq(1,12,1), labels = sources) + 
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) + 
+  xlab("\n\nAsset") +
+  ylab("Mean") +
+  ggtitle("Allocation for EU energy supply sources with imputed missing data")
+
+ggsave("/Users/elizabeth/Documents/Master's Project/Full_plot.png",
+       plot = last_plot(),
+       width = 10,
+       height = 7,
+       dpi = 600,
+       device = "png")
+
+#########
+## full data - drop
+#########
+Full_means_drop <- data.frame(c(markowitz_full_drop[,-1],
+                            BL_full_drop[,-1],
+                            ML_full_drop[,-1]))
+colnames(Full_means_drop)[1] <- "mean"; #colnames(Full_means)[2] <- "stdev"
+Full_means_drop$asset <- c(1:12,1:12,1:12)
+Full_means_drop$Method <- c(rep("Markowitz",12),rep("Black-Litterman",12),rep("Deep Learning",12))
+Full_means_drop$asset[which(Full_means_drop$Method == "Markowitz")] <- Full_means_drop$asset[which(Full_means_drop$Method == "Markowitz")] - 0.1 
+Full_means_drop$asset[which(Full_means_drop$Method == "Deep Learning")] <- Full_means_drop$asset[which(Full_means_drop$Method == "Deep Learning")] + 0.1
+
+ggFull_means <- ggplot(Full_means_drop, aes(asset, mean, color = Method)) +
+  geom_point() + 
+  #geom_errorbar(aes(ymin = mean-1.96*stdev/10, ymax=mean+1.96*stdev/10)) +
+  scale_x_continuous(breaks = seq(1,12,1), labels = sources) + 
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) + 
+  xlab("\n\nAsset") +
+  ylab("Mean") +
+  ggtitle("Allocation for EU energy supply sources with dropped missing data")
+
+ggsave("/Users/elizabeth/Documents/Master's Project/Full_plot_drop.png",
+       plot = last_plot(),
+       width = 10,
+       height = 7,
+       dpi = 600,
+       device = "png")
+
+#########
+## drop one country at a time - imputation
+#########
+Country_means <- data.frame(c(apply(markowitz_country[,-1], 2, mean),
+                            apply(BL_country[,-1], 2, mean),
+                            apply(ML_country[complete.cases(ML_country),-1], 2, mean)),
+                            c(apply(markowitz_country[,-1], 2, sd),
+                            apply(BL_country[,-1], 2, sd),
+                            apply(ML_country[complete.cases(ML_country),-1], 2, sd)))
+colnames(Country_means)[1] <- "mean"; colnames(Country_means)[2] <- "stdev"
+Country_means$asset <- c(1:12,1:12,1:12)
+Country_means$Method <- c(rep("Markowitz",12),rep("Black-Litterman",12),rep("Deep Learning",12))
+Country_means$asset[which(Country_means$Method == "Markowitz")] <- Country_means$asset[which(Country_means$Method == "Markowitz")] - 0.1 
+Country_means$asset[which(Country_means$Method == "Deep Learning")] <- Country_means$asset[which(Country_means$Method == "Deep Learning")] + 0.1
+
+ggCountry_means <- ggplot(Country_means, aes(asset, mean, color = Method)) +
+  geom_point() + 
+  geom_errorbar(aes(ymin = mean-1.96*stdev/10, ymax=mean+1.96*stdev/10)) +
+  scale_x_continuous(breaks = seq(1,12,1), labels = sources) + 
+  #scale_y_continuous(limits = c(-0.01,0.25)) + 
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) + 
+  xlab("\n\nAsset") +
+  ylab("Mean") +
+  ggtitle("Average return allocation dropping one country at a time \n for EU energy supply sources with imputed missing data ")
+
+ggsave("/Users/elizabeth/Documents/Master's Project/Country_plot.png",
+       plot = last_plot(),
+       width = 10,
+       height = 7,
+       dpi = 600,
+       device = "png")
+
+#########
+## drop one country at a time - drop
+#########
+Country_means_drop <- data.frame(c(apply(markowitz_country_drop[,-1], 2, mean),
+                            apply(BL_country_drop[,-1], 2, mean),
+                            apply(ML_country[complete.cases(ML_country_drop),-1], 2, mean)),
+                            c(apply(markowitz_country_drop[,-1], 2, sd),
+                            apply(BL_country_drop[,-1], 2, sd),
+                            apply(ML_country_drop[complete.cases(ML_country_drop),-1], 2, sd)))
+colnames(Country_means_drop)[1] <- "mean"; colnames(Country_means_drop)[2] <- "stdev"
+Country_means_drop$asset <- c(1:12,1:12,1:12)
+Country_means_drop$Method <- c(rep("Markowitz",12),rep("Black-Litterman",12),rep("Deep Learning",12))
+Country_means_drop$asset[which(Country_means_drop$Method == "Markowitz")] <- Country_means_drop$asset[which(Country_means_drop$Method == "Markowitz")] - 0.1 
+Country_means_drop$asset[which(Country_means_drop$Method == "Deep Learning")] <- Country_means_drop$asset[which(Country_means_drop$Method == "Deep Learning")] + 0.1
+
+ggCountry_means <- ggplot(Country_means_drop, aes(asset, mean, color = Method)) +
+  geom_point() + 
+  geom_errorbar(aes(ymin = mean-1.96*stdev/10, ymax=mean+1.96*stdev/10)) +
+  scale_x_continuous(breaks = seq(1,12,1), labels = sources) + 
+  #scale_y_continuous(limits = c(-0.05,0.4)) + 
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) + 
+  xlab("\n\nAsset") +
+  ylab("Mean") +
+  ggtitle("Average return allocation dropping one country at a time \n for EU energy supply sources with dropped missing data ")
+
+ggsave("/Users/elizabeth/Documents/Master's Project/Country_plot_drop.png",
+       plot = last_plot(),
+       width = 10,
+       height = 7,
+       dpi = 600,
+       device = "png")
+
+#########
+## drop one year at a time - imputation
+#########
+Year_means <- data.frame(c(apply(markowitz_year[,-1], 2, mean),
+                            apply(BL_year[,-1], 2, mean),
+                            apply(ML_year[complete.cases(ML_year),-1], 2, mean)),
+                            c(apply(markowitz_year[,-1], 2, sd),
+                            apply(BL_year[,-1], 2, sd),
+                            apply(ML_year[complete.cases(ML_year),-1], 2, sd)))
+colnames(Year_means)[1] <- "mean"; colnames(Year_means)[2] <- "stdev"
+Year_means$asset <- c(1:12,1:12,1:12)
+Year_means$Method <- c(rep("Markowitz",12),rep("Black-Litterman",12),rep("Deep Learning",12))
+Year_means$asset[which(Year_means$Method == "Markowitz")] <- Year_means$asset[which(Year_means$Method == "Markowitz")] - 0.1 
+Year_means$asset[which(Year_means$Method == "Deep Learning")] <- Year_means$asset[which(Year_means$Method == "Deep Learning")] + 0.1
+
+ggYear_means <- ggplot(Year_means, aes(asset, mean, color = Method)) +
+  geom_point() + 
+  geom_errorbar(aes(ymin = mean-1.96*stdev/10, ymax=mean+1.96*stdev/10)) +
+  scale_x_continuous(breaks = seq(1,12,1), labels = sources) + 
+  #scale_y_continuous(limits = c(0,0.4)) + 
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) + 
+  xlab("\n\nAsset") +
+  ylab("Mean") +
+  ggtitle("Average return allocation dropping one year at a time \n for EU energy supply sources with imputed missing data ")
+
+ggsave("/Users/elizabeth/Documents/Master's Project/Year_plot.png",
+       plot = last_plot(),
+       width = 10,
+       height = 7,
+       dpi = 600,
+       device = "png")
+
+#########
+## drop one year at a time - drop
+#########
+Year_means_drop <- data.frame(c(apply(markowitz_year_drop[,-1], 2, mean),
+                            apply(BL_year_drop[,-1], 2, mean),
+                            apply(ML_year_drop[complete.cases(ML_year_drop),-1], 2, mean)),
+                            c(apply(markowitz_year_drop[,-1], 2, sd),
+                            apply(BL_year_drop[,-1], 2, sd),
+                            apply(ML_year_drop[complete.cases(ML_year_drop),-1], 2, sd)))
+colnames(Year_means_drop)[1] <- "mean"; colnames(Year_means_drop)[2] <- "stdev"
+Year_means_drop$asset <- c(1:12,1:12,1:12)
+Year_means_drop$Method <- c(rep("Markowitz",12),rep("Black-Litterman",12),rep("Deep Learning",12))
+Year_means_drop$asset[which(Year_means_drop$Method == "Markowitz")] <- Year_means_drop$asset[which(Year_means_drop$Method == "Markowitz")] - 0.1 
+Year_means_drop$asset[which(Year_means_drop$Method == "Deep Learning")] <- Year_means_drop$asset[which(Year_means_drop$Method == "Deep Learning")] + 0.1
+
+ggYear_means_drop <- ggplot(Year_means_drop, aes(asset, mean, color = Method)) +
+  geom_point() + 
+  geom_errorbar(aes(ymin = mean-1.96*stdev/10, ymax=mean+1.96*stdev/10)) +
+  scale_x_continuous(breaks = seq(1,12,1), labels = sources) + 
+  #scale_y_continuous(limits = c(-0.01,0.4)) + 
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) + 
+  xlab("\n\nAsset") +
+  ylab("Mean") +
+  ggtitle("Average return allocation dropping one year at a time \n for EU energy supply sources with dropped missing data ")
+
+ggsave("/Users/elizabeth/Documents/Master's Project/Year_plot_drop.png",
+       plot = last_plot(),
+       width = 10,
+       height = 7,
+       dpi = 600,
+       device = "png")
+
+#########
+## drop 20% at a time - imputation
+#########
+Rand_means <- data.frame(c(apply(markowitz_rand[,-1], 2, mean),
+                            apply(BL_rand[,-1], 2, mean),
+                            apply(ML_rand[complete.cases(ML_rand),-1], 2, mean)),
+                            c(apply(markowitz_rand[,-1], 2, sd),
+                            apply(BL_rand[,-1], 2, sd),
+                            apply(ML_rand[complete.cases(ML_rand),-1], 2, sd)))
+colnames(Rand_means)[1] <- "mean"; colnames(Rand_means)[2] <- "stdev"
+Rand_means$asset <- c(1:12,1:12,1:12)
+Rand_means$Method <- c(rep("Markowitz",12),rep("Black-Litterman",12),rep("Deep Learning",12))
+Rand_means$asset[which(Rand_means$Method == "Markowitz")] <- Rand_means$asset[which(Rand_means$Method == "Markowitz")] - 0.1 
+Rand_means$asset[which(Rand_means$Method == "Deep Learning")] <- Rand_means$asset[which(Rand_means$Method == "Deep Learning")] + 0.1
+
+ggRand_means <- ggplot(Rand_means, aes(asset, mean, color = Method)) +
+  geom_point() + 
+  geom_errorbar(aes(ymin = mean-1.96*stdev/10, ymax=mean+1.96*stdev/10)) +
+  scale_x_continuous(breaks = seq(1,12,1), labels = sources) + 
+  #scale_y_continuous(limits = c(-0.01,0.4)) + 
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) + 
+  xlab("\n\nAsset") +
+  ylab("Mean") +
+  ggtitle("Average return allocation dropping a random 20% of data at a time \n for EU energy supply sources with imputed missing data ")
+
+ggsave("/Users/elizabeth/Documents/Master's Project/Rand_plot.png",
+       plot = last_plot(),
+       width = 10,
+       height = 7,
+       dpi = 600,
+       device = "png")
+
+#########
+## drop 20% at a time - drop
+#########
+Rand_means_drop <- data.frame(c(apply(markowitz_rand_drop[,-1], 2, mean),
+                            apply(BL_rand_drop[,-1], 2, mean),
+                            apply(ML_rand_drop[complete.cases(ML_rand_drop),-1], 2, mean)),
+                            c(apply(markowitz_rand_drop[,-1], 2, sd),
+                            apply(BL_rand_drop[,-1], 2, sd),
+                            apply(ML_rand_drop[complete.cases(ML_rand_drop),-1], 2, sd)))
+colnames(Rand_means_drop)[1] <- "mean"; colnames(Rand_means_drop)[2] <- "stdev"
+Rand_means_drop$asset <- c(1:12,1:12,1:12)
+Rand_means_drop$Method <- c(rep("Markowitz",12),rep("Black-Litterman",12),rep("Deep Learning",12))
+Rand_means_drop$asset[which(Rand_means_drop$Method == "Markowitz")] <- Rand_means_drop$asset[which(Rand_means_drop$Method == "Markowitz")] - 0.1 
+Rand_means_drop$asset[which(Rand_means_drop$Method == "Deep Learning")] <- Rand_means_drop$asset[which(Rand_means_drop$Method == "Deep Learning")] + 0.1
+
+ggRand_means_drop <- ggplot(Rand_means_drop, aes(asset, mean, color = Method)) +
+  geom_point() + 
+  geom_errorbar(aes(ymin = mean-1.96*stdev/10, ymax=mean+1.96*stdev/10)) +
+  scale_x_continuous(breaks = seq(1,12,1), labels = sources) + 
+  #scale_y_continuous(limits = c(-0.01,0.4)) + 
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) + 
+  xlab("\n\nAsset") +
+  ylab("Mean") +
+  ggtitle("Average return allocation dropping a random 20% of data at a time \n for EU energy supply sources with dropped missing data ")
+
+ggsave("/Users/elizabeth/Documents/Master's Project/Rand_plot_drop.png",
+       plot = last_plot(),
+       width = 10,
+       height = 7,
+       dpi = 600,
+       device = "png")
+```
+
+
+
+
+
+
+
+
+
+
+
